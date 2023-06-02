@@ -7,7 +7,7 @@ class Cliente:
         self.telefono = telefono
 
 class ClienteCredito(Cliente):
-    contador=0
+    contador=2
     def __init__(self, codigo, nombre, direccion, telefono, saldo_credito):
         ClienteCredito.contador += 1
         codigo="CC"+ str(ClienteCredito.contador).zfill(3)
@@ -15,7 +15,7 @@ class ClienteCredito(Cliente):
         self.saldo_credito = saldo_credito
 
 class ClienteContado(Cliente):
-    contador=0
+    contador=2
     def __init__(self, codigo, nombre, direccion, telefono,saldo_contado):
         ClienteContado.contador += 1
         codigo = "CT" + str(ClienteContado.contador).zfill(3)
@@ -23,17 +23,18 @@ class ClienteContado(Cliente):
         self.saldo_contado = saldo_contado
 
 class Producto:
+    
     def __init__(self, codigo_pro, detalle, precio_venta, stock):
-        self.codigo_pro = codigo_pro
+        self.codigo_pro =codigo_pro
         self.detalle = detalle
         self.precio_venta = precio_venta
         self.stock = stock
 
 class Venta:
-    def __init__(self, nro_docto, cod_cli, codigoProd, cantidad_vendida, precio_venta, fecha):
+    def __init__(self, nro_docto, cod_cli, codigo_pro, cantidad_vendida, precio_venta, fecha):
         self.nro_docto = nro_docto
         self.cod_cli = cod_cli
-        self.codigoProd = codigoProd
+        self.codigoProd = codigo_pro
         self.cantidad_vendida = cantidad_vendida
         self.precio_venta = precio_venta
         self.fecha = fecha
@@ -46,16 +47,30 @@ class SistemaVentas:
         self.clientes_contado = []
         self.productos = {}
         self.ventas = []
-        #clientes predefinidos credito
+        self.contador_productos=4
+    #clientes predefinidos credito
         cliente_credito1 = ClienteCredito("CC001", "Juan Pérez", "Calle 123", "555-1234", 500)
         cliente_credito2 = ClienteCredito("CC002", "María Gómez", "Avenida 456", "555-5678", 1000)
         self.clientes_credito.append(cliente_credito1)
         self.clientes_credito.append(cliente_credito2)
-        #clientes predefinidos contado
+    #clientes predefinidos contado
         cliente_contado1 = ClienteContado("CT001", "Pedro Rodríguez", "Carrera 789", "555-9876", 200)
         cliente_contado2 = ClienteContado("CT002", "Laura Silva", "Avenida 654", "555-4321", 300)
         self.clientes_contado.append(cliente_contado1)
         self.clientes_contado.append(cliente_contado2)
+    #productos predefinidos
+        producto1 = Producto("P001", "Camisa", 25.99, 10)
+        producto2 = Producto("P002", "Pantalón", 39.99, 5)
+        producto3 = Producto("P003", "Zapatos", 59.99, 3)
+        producto4 = Producto("P004", "Sombrero", 12.99, 8)
+
+        self.productos[producto1.codigo_pro] = producto1
+        self.productos[producto2.codigo_pro] = producto2
+        self.productos[producto3.codigo_pro] = producto3
+        self.productos[producto4.codigo_pro] = producto4
+
+
+
     
     def agregar_cliente(self):
         max_intentos = 5  
@@ -100,10 +115,7 @@ class SistemaVentas:
             print("Código de cliente:", codigo)
         except ValueError as e:
             print("Error:", e)
-        
- 
-        
-    
+
     def pagar_deuda(self, monto):
         if monto > 0:
             if monto > self.saldo_credito:
@@ -118,7 +130,8 @@ class SistemaVentas:
             print("El monto debe ser mayor a cero.")
 
     def agregar_producto(self):
-        codigo_pro = input("Ingrese el código del producto: ")
+        self.contador_productos += 1
+        codigo_pro = "P" + str(self.contador_productos).zfill(3)
         if codigo_pro in self.productos:
             print("El código de producto ya existe.")
             return
@@ -128,6 +141,7 @@ class SistemaVentas:
         producto = Producto(codigo_pro, detalle, precio_venta, stock)
         self.productos[codigo_pro] = producto
         print("Producto agregado correctamente.")
+        print("Código de producto:", codigo_pro)
 
     def realizar_venta(self):
         nro_docto = input("Ingrese el número de documento de la venta: ")
@@ -258,11 +272,6 @@ class SistemaVentas:
                     print("Encontraste el easter egg")
                     return
                 print("Opción inválida. Intente nuevamente.")
-
-
-            
-
-
 
 sistema_ventas = SistemaVentas()
 sistema_ventas.menu_principal()
